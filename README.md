@@ -1,2 +1,2 @@
-# KamcioMySQL
-MySQL library for java
+# KamcioSQL
+SQL library for java
