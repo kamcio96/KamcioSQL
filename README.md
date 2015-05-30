@@ -4,7 +4,7 @@ SQL library for java
 Simple usage:
 ```
 Database database = ...; //TODO mysql/sqlite
-Queries.select().table("my_table").culumn("a").callback(new QueryCallback() {
+Queries.select().table("my_table").column("a").callback(new QueryCallback() {
 
     @Override public void done(QueryResult result) throws Exception {
         while(result.next()) {
@@ -17,5 +17,12 @@ Queries.select().table("my_table").culumn("a").callback(new QueryCallback() {
         t.printStackTrace();
     }
 
-}).run(database);
+})
+//static import
+.where(
+    builder( like("name", "kamcio96") ).or(
+        builder( grater("points", "10") ).and( grater("playedTime", "3600") )
+    ).and(builder( equal("type", "player")).or(Null("items").reverse()) )
+)
+.limit(10).run(database);
 ```
