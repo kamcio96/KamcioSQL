@@ -3,6 +3,7 @@ package pl.kamcio96.kamciosql.query.impl;
 import com.google.common.base.Preconditions;
 import pl.kamcio96.kamciosql.Database;
 import pl.kamcio96.kamciosql.QueryExecutor;
+import pl.kamcio96.kamciosql.condition.Condition;
 import pl.kamcio96.kamciosql.condition.ConditionBuilder;
 import pl.kamcio96.kamciosql.query.UpdateQuery;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 
 public class UpdateQueryImpl extends QueryImpl<UpdateQuery> implements UpdateQuery {
 
-    private Map<String, String> data = new HashMap<String, String>();
+    private Map<String, String> data = new HashMap<>();
     private LimitModule limitModule = new LimitModule();
     private String whereCondition;
 
@@ -32,7 +33,12 @@ public class UpdateQueryImpl extends QueryImpl<UpdateQuery> implements UpdateQue
             }
             builder.append("`").append(entry.getKey()).append("`");
             builder.append("=");
-            builder.append("'").append(entry.getValue()).append("'");
+            String value = entry.getValue();
+            if(value == null) {
+                builder.append("NULL");
+            } else {
+                builder.append("'").append(entry.getValue()).append("'");
+            }
             firstData = false;
         }
 
@@ -55,8 +61,22 @@ public class UpdateQueryImpl extends QueryImpl<UpdateQuery> implements UpdateQue
         return this;
     }
 
+    @Override public UpdateQuery where(Condition condition) {
+        whereCondition = condition.toString();
+        return this;
+    }
+
     @Override public UpdateQuery where(ConditionBuilder condition) {
         whereCondition = condition.toString();
         return this;
+    }
+
+    @Override public UpdateQuery clone(){
+        UpdateQueryImpl copy = new UpdateQueryImpl();
+        copySuper(copy);
+        copy.data = new HashMap<>(data);
+        copy.limitModule = limitModule.clone();
+        copy.whereCondition = whereCondition;
+        return copy;
     }
 }

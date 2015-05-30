@@ -24,4 +24,11 @@ class LimitModule {
         }
         return builder.toString();
     }
+
+    protected LimitModule clone() {
+        LimitModule copy = new LimitModule();
+        copy.limit = limit;
+        copy.offset = offset;
+        return copy;
+    }
 }

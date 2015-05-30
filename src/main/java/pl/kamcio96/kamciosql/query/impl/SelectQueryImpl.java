@@ -3,6 +3,7 @@ package pl.kamcio96.kamciosql.query.impl;
 import com.google.common.base.Preconditions;
 import pl.kamcio96.kamciosql.Database;
 import pl.kamcio96.kamciosql.QueryExecutor;
+import pl.kamcio96.kamciosql.condition.Condition;
 import pl.kamcio96.kamciosql.condition.ConditionBuilder;
 import pl.kamcio96.kamciosql.query.SelectQuery;
 
@@ -60,8 +61,22 @@ public class SelectQueryImpl extends QueryImpl<SelectQuery> implements SelectQue
         return this;
     }
 
+    @Override public SelectQuery where(Condition condition) {
+        whereCondition = condition.toString();
+        return this;
+    }
+
     @Override public SelectQuery where(ConditionBuilder condition) {
         whereCondition = condition.toString();
         return this;
+    }
+
+    @Override public SelectQuery clone() {
+        SelectQueryImpl copy = new SelectQueryImpl();
+        copySuper(copy);
+        copy.columns = new HashSet<>(columns);
+        copy.limitModule = limitModule.clone();
+        copy.whereCondition = whereCondition;
+        return copy;
     }
 }

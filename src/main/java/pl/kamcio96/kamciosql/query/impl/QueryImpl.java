@@ -23,4 +23,10 @@ public abstract class QueryImpl<T extends Query> implements Query<T> {
         this.callback = callback;
         return (T) this;
     }
+
+    protected void copySuper(QueryImpl copy) {
+        copy.table = table;
+        copy.now = now;
+        copy.callback = callback;
+    }
 }
