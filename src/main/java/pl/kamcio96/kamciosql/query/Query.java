@@ -10,6 +10,8 @@ public interface Query<T extends Query> {
 
     public T callback(QueryCallback callback);
 
+    //public T clone();
+
     public void run(Database database);
 
 }

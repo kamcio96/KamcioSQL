@@ -3,7 +3,7 @@ package pl.kamcio96.kamciosql.query.impl;
 import com.google.common.base.Preconditions;
 import pl.kamcio96.kamciosql.Database;
 import pl.kamcio96.kamciosql.QueryExecutor;
-import pl.kamcio96.kamciosql.query.Query;
+import pl.kamcio96.kamciosql.condition.ConditionBuilder;
 import pl.kamcio96.kamciosql.query.UpdateQuery;
 
 import java.util.HashMap;
@@ -12,6 +12,8 @@ import java.util.Map;
 public class UpdateQueryImpl extends QueryImpl<UpdateQuery> implements UpdateQuery {
 
     private Map<String, String> data = new HashMap<String, String>();
+    private LimitModule limitModule = new LimitModule();
+    private String whereCondition;
 
     @Override public void add(String column, String value) {
         data.put(column, value);
@@ -34,7 +36,27 @@ public class UpdateQueryImpl extends QueryImpl<UpdateQuery> implements UpdateQue
             firstData = false;
         }
 
-        //TODO where, limit
+        if(whereCondition != null) {
+            builder.append(" WHERE ").append(whereCondition);
+        }
+
+        builder.append(limitModule.getQueryPart());
+
         database.runQuery(new PreparedQuery(builder.toString(), now, callback, QueryExecutor.UPDATE));
+    }
+
+    @Override public UpdateQuery limit(int limit) {
+        limitModule.limit(limit);
+        return this;
+    }
+
+    @Override public UpdateQuery offset(int offset) {
+        limitModule.offset(offset);
+        return this;
+    }
+
+    @Override public UpdateQuery where(ConditionBuilder condition) {
+        whereCondition = condition.toString();
+        return this;
     }
 }
