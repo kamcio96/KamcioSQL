@@ -13,7 +13,7 @@ public class SelectQueryImpl extends QueryImpl<SelectQuery> implements SelectQue
 
     private Set<String> columns = new HashSet<>();
 
-    @Override public SelectQuery culumn(String... column) {
+    @Override public SelectQuery column(String... column) {
         columns.addAll(Arrays.asList(column));
         return this;
     }
