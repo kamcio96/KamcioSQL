@@ -1,6 +1,7 @@
 package pl.kamcio96.kamciosql;
 
 import pl.kamcio96.kamciosql.query.impl.PreparedQuery;
+import pl.kamcio96.kamciosql.query.impl.QueryResultSet;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -30,7 +31,7 @@ public abstract class Database {
                     Statement statement = connection.createStatement();
                     ResultSet rs = query.getExecutor().runQuery(statement, query.getQuery());
                     if(rs != null && query.getCallback() != null) {
-                        query.getCallback().done(new Impls.QueryResultSet(rs));
+                        query.getCallback().done(new QueryResultSet(rs));
                     }
                     //TODO callback
                 } catch (Exception e) {
