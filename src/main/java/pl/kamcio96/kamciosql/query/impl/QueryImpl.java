@@ -24,6 +24,8 @@ public abstract class QueryImpl<T extends Query> implements Query<T> {
         return (T) this;
     }
 
+    @Override public abstract T clone();
+
     protected void copySuper(QueryImpl copy) {
         copy.table = table;
         copy.now = now;
