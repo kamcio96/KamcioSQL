@@ -56,9 +56,54 @@ public class ConditionBuilder {
         return new Condition(Condition.ConditionType.NULL, column, null);
     }
 
+    public static class Pre {
+        private String name;
+
+        private Pre(String name) {
+            this.name = name;
+        }
+
+        public Condition like(String value) {
+            return new Condition(Condition.ConditionType.LIKE, name, value);
+        }
+
+        public Condition like(int value) {
+            return new Condition(Condition.ConditionType.LIKE, name, String.valueOf(value));
+        }
+
+        public Condition less(int value) {
+            return new Condition(Condition.ConditionType.LESS_THAN, name, String.valueOf(value));
+        }
+
+        public Condition grater(int value) {
+            return new Condition(Condition.ConditionType.GREATER_THAN, name, String.valueOf(value));
+        }
+
+        public Condition equal(int value) {
+            return new Condition(Condition.ConditionType.EQUALS, name, String.valueOf(value));
+        }
+
+        public Condition equal(String value) {
+            return new Condition(Condition.ConditionType.EQUALS, name, value);
+        }
+
+        public Condition Null() {
+            return new Condition(Condition.ConditionType.NULL, name, null);
+        }
+
+    }
+
+    public static Pre of(String name) {
+        return new Pre(name);
+    }
+
     /*
         builder(like("name", "kamcio96)).or(
             builder( grater("points", "10") ).and( grater("playedTime", "3600") )
         )
+
+        new idea:
+        of("name").like("kamcio96");
+        of("playedTime").grater(3600);
     */
 }

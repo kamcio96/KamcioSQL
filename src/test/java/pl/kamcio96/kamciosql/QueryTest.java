@@ -39,8 +39,10 @@ public class QueryTest implements TaskProvider {
 
         base.clone().run(db);
         base.clone().limit(1).run(db);
+        base.clone().where(of("version").equal(1)).run(db);
         base.clone().where(equal("version", "1")).run(db);
         base.clone().where(builder(equal("version", "1")).or(equal("loginTime", "2"))).run(db);
+        base.clone().where(builder( of("version").equal(1) ).or( of("loginTime").equal(2) )).run(db);
         base.clone().column("name", "version").where(like("name", "kamcio96").reverse()).run(db);
     }
 
