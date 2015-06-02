@@ -2,6 +2,8 @@ package pl.kamcio96.kamciosql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 class MySQL extends Database {
 
@@ -18,10 +20,23 @@ class MySQL extends Database {
     }
 
     @Override protected Connection connect() throws Exception {
-        return DriverManager.getConnection(url, username, password);
+        Connection c = DriverManager.getConnection(url, username, password);
+        return c;
     }
 
     @Override public Type getType() {
         return Type.MYSQL;
+    }
+
+    private class KeepAliveTask implements Runnable {
+
+        @Override public void run() {
+            try {
+                checkConnection();
+                getConnection().createStatement().executeUpdate("DO 1");
+            } catch (SQLException e) {
+                provider.getLogger().log(Level.WARNING, "Exception during keep alive");
+            }
+        }
     }
 }

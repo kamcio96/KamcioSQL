@@ -4,7 +4,10 @@ import com.google.common.base.Preconditions;
 import pl.kamcio96.kamciosql.query.impl.PreparedQuery;
 import pl.kamcio96.kamciosql.query.impl.QueryResultSet;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -27,19 +30,11 @@ public abstract class Database {
         this.provider = provider;
     }
 
-    public final void runQuery(final PreparedQuery query) {
-        Preconditions.checkState(active.get(), "Database closed!");
-
-        Runnable runnable = new QueryRunner(query);
-
-        if(query.isNow()) {
-            runnable.run();
-        } else {
-            provider.runTask(runnable);
-        }
-    }
-
     protected abstract Connection connect() throws Exception;
+
+    protected Connection getConnection() {
+        return connection.get();
+    }
 
     protected final void checkConnection() {
         try {
@@ -53,8 +48,24 @@ public abstract class Database {
         }
     }
 
+    public final void runQuery(final PreparedQuery query) {
+        Preconditions.checkState(active.get(), "Database closed!");
+
+        Runnable runnable = new QueryRunner(query);
+
+        if(query.isNow()) {
+            runnable.run();
+        } else {
+            provider.runTask(runnable);
+        }
+    }
+
     public void setDebug(boolean debug) {
         this.debug.set(debug);
+    }
+
+    public boolean isClosed() {
+        return active.get();
     }
 
     public final void close() {
